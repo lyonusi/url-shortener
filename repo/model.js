@@ -23,13 +23,18 @@ const createNew =  async (original) => {
 
 const decodeUrl = async (short) => {
   console.log('repo.decodeUrl: ', short)
-    const result = await Url.findOne({short:short},(err, original) => {
-      if(err) return console.log(err);
-      original.counter +=1;
-      console.log('repo.decodeUrl.find: ', original)
-      done(null, original);
+  const result = await Url.findOne({short:short},(err, original) => {
+      if(err) {
+        return console.log(err);
+      } 
+      if(original){
+        original.counter +=1;
+        original.save();
+        console.log('repo.decodeUrl.find: ', original);
+      }
   });
   console.log('repo.decodeUrl.result: ', result)
+  return result? result.original: result;
 };
 
 const checkUrl =  async (original) => {
@@ -44,4 +49,4 @@ exports.UrlModel = Url;
 exports.createNew = createNew;
 exports.decodeUrl = decodeUrl;
 exports.checkUrl = checkUrl;
-//module.exports = ()
+// module.exports = Url;

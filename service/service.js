@@ -24,8 +24,8 @@ module.exports = (method, data, callback) => {
 
     //if the input url does not match the pattern, return error message
     if(!isValidUrlPattern) {
-      const returnedJson = {"error":"Invalid URL"};
-      callback(null,returnedJson);
+      const err = {"error":"Invalid URL"};
+      callback(err,undefined);
     } else {
 
       // if the input url matches the pattern
@@ -56,10 +56,25 @@ module.exports = (method, data, callback) => {
       })()
     }
   }
-  if (method == 'expand'){
+  if (method == 'redirect'){
+    console.log("service.redirect.data: length and type: ",data.length, typeof data);
+    if (data.length==6 && (typeof data) == 'string'){
 
-    
-  };
+      (async () => {
+        const original = await Url.decodeUrl(data);
+        if(original){
+          console.log("service.redirect.original = ", original);
+          callback (null, original);
+        } else {
+          const err = {"error":"No short URL found for the given input"};
+          callback (err, undefined);
+        }
+      })();
+    } else {
+      const err = {"error":"invalid input format"};
+      callback (err, undefined);
+    }
+    };
 }
 
 

@@ -37,8 +37,8 @@ app.post("/api/shorturl", (req, res) => {
         console.log('success');
         res.json(result);
     } else {
-        console.log('invalid result');
-        res.sendFile(__dirname + '/public/index.html');
+        console.log('invalid url input');
+        res.json(err);
   }});
 });
 
@@ -46,9 +46,32 @@ app.get('/', function(req, res) {
   res.sendFile(process.cwd() + '/views/index.html');
 });
 
-// Your first API endpoint
-app.post("/api/shorturl/:originalUrl", function(req, res) {
-  res.json({ greeting: 'hello API' });
+app.get("/api/shorturl/:shortUrl", (req, res) => {
+  const shortUrl = req.params.shortUrl;
+  handler('redirect', shortUrl, function(err, result) {
+    if (err) console.log('Error: ' + err);
+    if (result !== undefined) {
+      console.log('success');
+      res.redirect(result);
+  } else {
+      console.log('invalid input');
+      res.json(err);
+    }})
+  // res.json({ greeting: short });
+});
+
+app.get("/api/shorturl/", (req, res) => {
+  const shortUrl = req.query.short_url;
+  handler('redirect', shortUrl, function(err, result) {
+    if (err) console.log('Error: ' + err);
+    if (result !== undefined) {
+      console.log('success');
+      res.redirect(result);
+  } else {
+      console.log('invalid input');
+      res.json(err);
+    }})
+  // res.json({ greeting: short });
 });
 
 app.listen(port, function() {
